@@ -11,9 +11,6 @@ export class CreateUserService{
     async execute(data: ICreateUserRequestDTO) {
         const userAlreadyExists = await this.userRepository.findByEmail(data.email);
 
-        if(userAlreadyExists) {
-            throw new Error('User already exists.');
-        }
         const validEntries = Validator.validEntries(data);
 
         if (!validEntries) {
@@ -22,6 +19,10 @@ export class CreateUserService{
 
         if (data.type === 'admin') {
             throw new Error('Only admins can create admin user.');
+        }
+        
+        if(userAlreadyExists) {
+            throw new Error('User already exists.');
         }
 
         data.password = await passwordHash(data.password);

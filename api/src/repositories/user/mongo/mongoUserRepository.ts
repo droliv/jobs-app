@@ -10,7 +10,6 @@ export class MongoUserRepository implements IUserRepository {
                 const db = await connection();
                 const user = await db.collection('users').findOne({ email });
                 if (!user) return resolve(null);
-        
                 resolve(user);
               } catch (err) {
                 reject(err);
