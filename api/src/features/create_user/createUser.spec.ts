@@ -29,9 +29,9 @@ describe("1. Cadastro de usuário", () => {
   });
 
   afterAll(async () => {
-    await db.collection("users").deleteMany({});
+    //await db.collection("users").deleteMany({});
     await connection.close();
-    await db.close();
+    //await db.close();
   });
 
   it("É possível inserir um usuário", async () => {
@@ -143,6 +143,20 @@ describe("1. Cadastro de usuário", () => {
         const result = JSON.parse(body);
         expect(result.message).toBe("Invalid entries, try again.");
       });
+  });
+
+  it("O campo email deve ter um email válido", async () => {
+    await frisby.post(`${url}/api/users`, {
+        name: "user test",
+        email: "usertes.com",
+        birthdate: new Date("10/01/2000"),
+        password: "123456",
+        type: "candidate",
+    }).expect('status', 400).then(response => {
+      const { body } = response;
+      const result = JSON.parse(body);
+      expect(result.message).toBe("Invalid entries, try again.")
+    })
   });
 
   it("Não é possível criar um usuário admin", async () => {

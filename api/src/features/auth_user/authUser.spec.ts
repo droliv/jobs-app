@@ -18,7 +18,7 @@ describe("1. Autenticação do usuário", () => {
   });
 
   beforeEach(async () => {
-    // await db.collection("users").deleteMany({});
+    await db.collection("users").deleteMany({});
     const users = {
       name: "admin",
       email: "root@email.com",
@@ -29,9 +29,9 @@ describe("1. Autenticação do usuário", () => {
   });
 
   afterAll(async () => {
-    await db.collection("users").deleteMany({});
+    //await db.collection("users").deleteMany({});
     await connection.close();
-    await db.close();
+    //await db.close();
   });
 
   it("campo email é obrigatório", async () => {
