@@ -1,4 +1,5 @@
 import Validator  from "../../helpers/validator";
+import { passwordHash } from '../../helpers/generatePasswordHash';
 import { User } from "../../models/User";
 import { IUserRepository } from "../../repositories/user/IUserRepository";
 import { ICreateUserRequestDTO } from "./createUserDTO";
@@ -23,8 +24,11 @@ export class CreateUserService{
             throw new Error('Only admins can create admin user.');
         }
 
+        data.password = await passwordHash(data.password);
+
         const user = new User(data);
         const result = await this.userRepository.save(user);
+        
         return result;
     }
 }
