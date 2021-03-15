@@ -29,15 +29,14 @@ describe("1. Cadastro de usuário", () => {
   });
 
   afterAll(async () => {
-    //await db.collection("users").deleteMany({});
+    await db.collection("users").deleteMany({});
     await connection.close();
-    //await db.close();
+    await db.close();
   });
 
   it("É possível inserir um usuário", async () => {
     await frisby
       .post(`${url}/api/users`, {
-        id: uuid(),
         name: "user test",
         email: "user@test.com",
         birthdate: new Date("09/17/1963"),
@@ -58,7 +57,6 @@ describe("1. Cadastro de usuário", () => {
   it("O campo nome é obrigatório", async () => {
     await frisby
       .post(`${url}/api/users`, {
-        id: uuid(),
         name: "",
         email: "user@test.com",
         birthdate: new Date("09/17/1963"),
@@ -76,7 +74,6 @@ describe("1. Cadastro de usuário", () => {
   it("O campo email é obrigatório", async () => {
     await frisby
       .post(`${url}/api/users`, {
-        id: uuid(),
         name: "user test",
         email: "",
         birthdate: new Date("09/17/1963"),
@@ -94,7 +91,6 @@ describe("1. Cadastro de usuário", () => {
   it("O campo data de nascimento é obrigatório para candidato", async () => {
     await frisby
       .post(`${url}/api/users`, {
-        id: uuid(),
         name: "user test",
         email: "user@test.com",
         birthdate: "",
@@ -112,7 +108,6 @@ describe("1. Cadastro de usuário", () => {
   it("O campo senha é obrigatório", async () => {
     await frisby
       .post(`${url}/api/users`, {
-        id: uuid(),
         name: "user test",
         email: "user@test.com",
         birthdate: new Date("09/17/1963"),
@@ -130,7 +125,6 @@ describe("1. Cadastro de usuário", () => {
   it("O campo type é obrigatório", async () => {
     await frisby
       .post(`${url}/api/users`, {
-        id: uuid(),
         name: "user test",
         email: "user@test.com",
         birthdate: new Date("09/17/1963"),
@@ -162,7 +156,6 @@ describe("1. Cadastro de usuário", () => {
   it("Não é possível criar um usuário admin", async () => {
     await frisby
       .post(`${url}/api/users`, {
-        id: uuid(),
         name: "user test",
         email: "user@test.com",
         birthdate: new Date("09/17/1963"),
@@ -179,7 +172,6 @@ describe("1. Cadastro de usuário", () => {
 
   it("Não é possível cadastrar usuário com menos de 50 anos", async () => {
     await frisby.post(`${url}/api/users`, {
-      id: uuid(),
         name: "user test",
         email: "user@test.com",
         birthdate: new Date("10/01/2000"),

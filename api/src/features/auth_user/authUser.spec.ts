@@ -1,6 +1,7 @@
 import frisby from "frisby";
 import { MongoClient } from "mongodb";
 import { uuid, isUuid } from "uuidv4";
+import bcrypt from 'bcrypt-nodejs';
 
 const url = "http://localhost:3000";
 const mongoDbUrl = "mongodb://localhost:27017/appjobs";
@@ -19,19 +20,24 @@ describe("1. Autenticação do usuário", () => {
 
   beforeEach(async () => {
     await db.collection("users").deleteMany({});
-    const users = {
+    const salt = bcrypt.genSaltSync(5);
+    const users = [{
       name: "admin",
       email: "root@email.com",
       password: "admin",
       role: "admin",
-    };
-    await db.collection("users").insertOne(users);
+    }, {name: "user test",
+    email: "user@test.com",
+    birthdate: new Date("09/17/1963"),
+    password: bcrypt.hashSync("123456", salt),
+    type: "candidate"}];
+    await db.collection("users").insertMany(users);
   });
 
   afterAll(async () => {
-    //await db.collection("users").deleteMany({});
+    await db.collection("users").deleteMany({});
     await connection.close();
-    //await db.close();
+    await db.close();
   });
 
   it("campo email é obrigatório", async () => {
@@ -90,22 +96,10 @@ describe("1. Autenticação do usuário", () => {
       });
   });
 
-  it("Será validado que é possível fazer login com sucesso", async () => {
+  it("Será validado que é possível fazer login com sucesso", async () => { 
     await frisby
-      .post(`${url}/api/users/`, {
-        name: "user test",
-        email: "user@test.com",
-        birthdate: new Date("09/17/1963"),
-        password: "123456",
-        type: "candidate",
-      })
-      .expect("status", 201)
-      .then((response) => {
-        const { body } = response;
-        const result = JSON.parse(body);
-        return frisby
           .post(`${url}/api/login`, {
-            email: result.user.email,
+            email: 'user@test.com',
             password: "123456",
           })
           .expect("status", 200)
@@ -114,5 +108,4 @@ describe("1. Autenticação do usuário", () => {
             expect(json.token).not.toBeNull();
           });
       });
-  });
 });
