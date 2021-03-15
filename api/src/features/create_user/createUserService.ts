@@ -11,18 +11,23 @@ export class CreateUserService{
     async execute(data: ICreateUserRequestDTO) {
         const userAlreadyExists = await this.userRepository.findByEmail(data.email);
 
-        const validEntries = Validator.validEntries(data);
+        const validEntries = await Validator.validEntries(data);
 
         if (!validEntries) {
             throw new Error('Invalid entries, try again.');
         }
 
+        if(userAlreadyExists) {
+            throw new Error('User already exists.');
+        }
+
         if (data.type === 'admin') {
             throw new Error('Only admins can create admin user.');
         }
-        
-        if(userAlreadyExists) {
-            throw new Error('User already exists.');
+        if (data.type === 'candidate') {
+            if (!Validator.isValidAge(data.birthdate)) {
+                throw new Error('Only users over 50 years old.')
+            }
         }
 
         data.password = await passwordHash(data.password);

@@ -95,7 +95,7 @@ describe("1. Autenticação do usuário", () => {
       .post(`${url}/api/users/`, {
         name: "user test",
         email: "user@test.com",
-        birthdate: new Date("10/01/2000"),
+        birthdate: new Date("09/17/1963"),
         password: "123456",
         type: "candidate",
       })

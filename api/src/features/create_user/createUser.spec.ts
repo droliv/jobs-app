@@ -40,7 +40,7 @@ describe("1. Cadastro de usuário", () => {
         id: uuid(),
         name: "user test",
         email: "user@test.com",
-        birthdate: new Date("10/01/2000"),
+        birthdate: new Date("09/17/1963"),
         password: "123456",
         type: "candidate",
       })
@@ -61,7 +61,7 @@ describe("1. Cadastro de usuário", () => {
         id: uuid(),
         name: "",
         email: "user@test.com",
-        birthdate: new Date("10/01/2000"),
+        birthdate: new Date("09/17/1963"),
         password: "123456",
         type: "candidate",
       })
@@ -79,7 +79,7 @@ describe("1. Cadastro de usuário", () => {
         id: uuid(),
         name: "user test",
         email: "",
-        birthdate: new Date("10/01/2000"),
+        birthdate: new Date("09/17/1963"),
         password: "123456",
         type: "candidate",
       })
@@ -91,7 +91,7 @@ describe("1. Cadastro de usuário", () => {
       });
   });
 
-  it("O campo data de nascimento é obrigatório", async () => {
+  it("O campo data de nascimento é obrigatório para candidato", async () => {
     await frisby
       .post(`${url}/api/users`, {
         id: uuid(),
@@ -115,7 +115,7 @@ describe("1. Cadastro de usuário", () => {
         id: uuid(),
         name: "user test",
         email: "user@test.com",
-        birthdate: new Date("10/01/2000"),
+        birthdate: new Date("09/17/1963"),
         password: "",
         type: "candidate",
       })
@@ -133,7 +133,7 @@ describe("1. Cadastro de usuário", () => {
         id: uuid(),
         name: "user test",
         email: "user@test.com",
-        birthdate: new Date("10/01/2000"),
+        birthdate: new Date("09/17/1963"),
         password: "123456",
         type: "",
       })
@@ -149,7 +149,7 @@ describe("1. Cadastro de usuário", () => {
     await frisby.post(`${url}/api/users`, {
         name: "user test",
         email: "usertes.com",
-        birthdate: new Date("10/01/2000"),
+        birthdate: new Date("09/17/1963"),
         password: "123456",
         type: "candidate",
     }).expect('status', 400).then(response => {
@@ -165,7 +165,7 @@ describe("1. Cadastro de usuário", () => {
         id: uuid(),
         name: "user test",
         email: "user@test.com",
-        birthdate: new Date("10/01/2000"),
+        birthdate: new Date("09/17/1963"),
         password: "123456",
         type: "admin",
       })
@@ -176,4 +176,19 @@ describe("1. Cadastro de usuário", () => {
         expect(result.message).toBe("Only admins can create admin user.");
       });
   });
+
+  it("Não é possível cadastrar usuário com menos de 50 anos", async () => {
+    await frisby.post(`${url}/api/users`, {
+      id: uuid(),
+        name: "user test",
+        email: "user@test.com",
+        birthdate: new Date("10/01/2000"),
+        password: "123456",
+        type: "candidate",
+    }).expect('status', 400).then(response => {
+      const { body } = response;
+      const result = JSON.parse(body);
+      expect(result.message).toBe("Only users over 50 years old.")
+    })
+  })
 });

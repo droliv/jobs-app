@@ -1,9 +1,13 @@
 class Validator {
     validEntries(data){
-        if (!data.name || !data.email || !data.password || !data.birthdate || !data.type) {
+        if (!data.name || !data.email || !data.password  || !data.type) {
             return false;
         }
-        return this.isValidMail(data.email);
+        else if ((data.type === 'candidate') && (!data.birthdate)) {
+            return false;
+        } else {
+            return this.isValidMail(data.email);
+        }
     }
 
     isValidMail(email) {
@@ -12,6 +16,14 @@ class Validator {
             return true; 
         }
         return false;
+    }
+
+    isValidAge(date) {
+        const age = ((Date.now() - new Date(date)) / (31557600000) | 0);
+        if (age >= 50) {
+            return true
+        }
+        return false
     }
 }
 
