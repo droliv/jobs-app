@@ -24,7 +24,7 @@ describe("1. Autenticação do usuário", () => {
     const users = [{
       name: "admin",
       email: "root@email.com",
-      password: "admin",
+      password: bcrypt.hashSync("admin", salt),
       role: "admin",
     }, {name: "user test",
     email: "user@test.com",
