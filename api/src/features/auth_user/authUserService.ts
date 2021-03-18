@@ -17,6 +17,8 @@ export class AuthUserService {
             throw new Error('Invalid credentials, try again');
         }
         const isPasswordMath = bcrypt.compareSync(data.password, user.password);
+        console.log(isPasswordMath);
+        console.log(user);
         if(!isPasswordMath) {
             throw new Error('Invalid credentials, try again');
         }

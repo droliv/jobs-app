@@ -43,4 +43,20 @@ export class MongoUserRepository implements IUserRepository {
             }
         });
     }
+
+    async update(id: string, user: User): Promise<User>{
+        return new Promise(async (resolve, reject) => {
+            try{
+                const db = await connection();
+                const result = await db.collection('users').update(
+                    {id : id},
+                    {$set: {user}});
+                if (!result) return resolve(null);
+                console.log(result);
+                resolve(result);
+            } catch(err) {
+                reject(err);
+            }
+        })
+    }
 }

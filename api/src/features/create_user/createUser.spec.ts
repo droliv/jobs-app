@@ -157,7 +157,7 @@ describe("1. Cadastro de usuário", () => {
     await frisby
       .post(`${url}/api/users`, {
         name: "user test",
-        email: "user@test.com",
+        email: "adm@test.com",
         birthdate: new Date("09/17/1963"),
         password: "123456",
         type: "admin",

@@ -13,10 +13,10 @@ class VerifyToken {
     if (!token) {
       return Response.status(400).json({ message: "Missing auth token" });
     }
-    console.log(token)
     try {
       const decoded = jwt.verify(token, secret);
       const user = await this.userRepository.findByEmail(decoded.data.email);
+      console.log('user', user);
       if (!user) {
         return Response.status(401).json({ message: "Invalid token." });
       }

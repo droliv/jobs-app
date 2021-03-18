@@ -70,27 +70,54 @@ describe("1. Alteração de cadastro de usuário", () => {
       });
   });
 
-  it('É possível alterar um cadastro estando logado como admin', async () => {
+  it('Será validado que é possível editar cadastro com usuário admin', async () => {
+    let resultUser;
+    let resultAdmin;
+
     await frisby
-      .post(`${url}/login/`, {
+    .post(`${url}/api/users`, {
+        name: "user test",
+        email: "admin@test.com",
+        birthdate: new Date("09/17/1963"),
+        password: "123456",
+        type: "candidate",
+      })
+      .expect('status', 201)
+      .then((response) => {
+        const { body } = response;
+        resultUser = JSON.parse(body);
+      });
+
+    await frisby
+      .post(`${url}/api/login/`, {
         email: 'root@email.com',
         password: 'admin',
       })
       .expect('status', 200)
       .then((response) => {
         const { body } = response;
-        const result = JSON.parse(body);
-        return frisby
-          .setup({
-            request: {
-              headers: {
-                Authorization: result.token,
-                'Content-Type': 'application/json',
-              },
-            },
-          })
-          .post()
-          .expect('status', 201);
+        resultAdmin = JSON.parse(body);
       });
-  })
+
+    await frisby
+      .setup({
+        request: {
+          headers: {
+            Authorization: resultAdmin.token,
+            'Content-Type': 'application/json',
+          },
+        },
+      })
+      .put(`${url}/api/users/${resultUser.user.id}`, {
+        name: "user test 1",
+        email: "user@t.com"
+      })
+      .expect('status', 200)
+      .then((response) => {
+        const { body } = response;
+        const result = JSON.parse(body);
+        expect(result.user.name).toBe('user test 1');
+        expect(result.user.email).toBe('user@t.com');
+      });
+  });
 });

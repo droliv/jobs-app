@@ -1,4 +1,5 @@
 import validator from "../../helpers/validator";
+import { User } from "../../models/User";
 import { IUserRepository } from "../../repositories/user/IUserRepository";
 import { IAlterUserDTO } from "./alterUserDTO";
 
@@ -7,8 +8,9 @@ export class AlterUserService {
         private userRepository: IUserRepository,
     ){}
 
-    async execute(data: IAlterUserDTO) {
-        const user = await this.userRepository.findById(data.id);
+    async execute(id: string, data: IAlterUserDTO) {
+        let user = await this.userRepository.findById(id);
+        console.log(user);
         if(!user) {
             throw new Error('User not found.');
         }
@@ -17,6 +19,10 @@ export class AlterUserService {
                 throw new Error('Invalid entries, try again.');
             }
         }
-
+        user = new User(user);
+        Object.assign(user, data);
+        const result  = await this.userRepository.update(id, user);
+        console.log(result);
+        return result;
     }
 }
